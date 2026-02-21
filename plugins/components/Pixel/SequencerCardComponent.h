@@ -78,6 +78,8 @@ protected:
 
     int8_t encoderId = -1;
 
+    uint8_t shiftContextId = 0;
+
     bool renderPlayingStep = false;
     uint16_t lastPlayingStep = 0;
     std::function<void(bool)> onPlayStep = [this](bool isPlaying) {
@@ -248,6 +250,9 @@ public:
         /// The encoder id to scroll.
         encoderId = config.value("encoderId", encoderId); //eg: 0
 
+        /// Set context id shared to define the shift.
+        shiftContextId = config.value("shiftContextId", shiftContextId); //eg: 10
+
         if (config.contains("gridKeys") && config["gridKeys"].is_array()) {
             for (auto& key : config["gridKeys"]) {
                 if (key.is_number_integer()) {
@@ -413,6 +418,10 @@ public:
         //allow default handler to try first, in case we're using the
         //grid keys for some other function
         bool handled = Component::onKey(id, key, state, now);
+
+        //bool isShifted = view->contextVar[shiftContextId] != 0;
+        bool isShifted = view->contextVar[254] != 0; //WORKS
+
         if (isVisible() && !handled) {
             for (int i = 0; i < gridKeys.size() && steps->size(); i++) {
                 auto& gridKey = gridKeys[i];
@@ -423,7 +432,8 @@ public:
                     } else if (pressedTime != 0) {
                         pressedTime = 0;
                         int stepPos = getStepStart() + i;
-                        stepToggle(stepPos);
+                        //stepToggle(stepPos);
+                        setStepOn(stepPos, !isShifted);
                         setContext(contextId, stepPos);
                         renderNext();
                     }
@@ -444,6 +454,25 @@ public:
             }
         }
         return NULL;
+    }
+
+    void setStepOn(int position, bool on)
+    {
+        Step* step = getStepAtPos(position);
+        if (step) 
+        {
+            step->enabled = on;//!step->enabled;
+            if (step->enabled && step->len == 0) {
+                step->len = 1;
+            }
+        } else if (on) {
+            // Create a step and push it to the end
+            Step newStep;
+            newStep.position = position;
+            newStep.enabled = true;
+            newStep.len = 1;
+            steps->push_back(newStep);
+        }
     }
 
     void stepToggle(int position)

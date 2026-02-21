@@ -176,8 +176,8 @@ export function SeqView({
                             { key: A1, action: '.scroll', context: { id: shiftContext, value: 0 } },
                             { key: A1, action: `playPause`, context: { id: shiftContext, value: 1 } },
 
-                            { key: B1, action: `.setRow:0`, context: { id: shiftContext, value: 1 } },
-                             { key: B2, action: `.setRow:1`, context: { id: shiftContext, value: 1 } },
+                            // { key: B1, action: `.setRow:0`, context: { id: shiftContext, value: 1 } },
+                            //  { key: B2, action: `.setRow:1`, context: { id: shiftContext, value: 1 } },
 
                             { key: A2, action: '.scroll:-1', context: { id: shiftContext, value: 0 } },
                             {
