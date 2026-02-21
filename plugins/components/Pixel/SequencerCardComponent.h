@@ -410,7 +410,10 @@ public:
 
     bool onKey(uint16_t id, int key, int8_t state, unsigned long now) override
     {
-        if (isVisible()) {
+        //allow default handler to try first, in case we're using the
+        //grid keys for some other function
+        bool handled = Component::onKey(id, key, state, now);
+        if (isVisible() && !handled) {
             for (int i = 0; i < gridKeys.size() && steps->size(); i++) {
                 auto& gridKey = gridKeys[i];
                 if (gridKey == key) {
@@ -424,11 +427,11 @@ public:
                         setContext(contextId, stepPos);
                         renderNext();
                     }
-                    return true;
+                    handled = true;
                 }
             }
         }
-        return Component::onKey(id, key, state, now);
+        return handled; 
     }
 
     Step* getStepAtPos(int pos)
