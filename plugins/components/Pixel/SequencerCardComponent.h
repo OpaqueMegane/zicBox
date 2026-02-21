@@ -125,10 +125,26 @@ protected:
         int scrollGroup = getScrollGroup();
         scrollGroup = (scrollGroup + direction) % (maxSteps / (stepPerRow * rowsSelection));
         pressedKeyIndex = scrollGroup * (stepPerRow * rowsSelection);
-        if (pressedKeyIndex < 0) { pressedKeyIndex = maxSteps - (stepPerRow * rowsSelection); }
+        if (pressedKeyIndex < 0)
+        {
+             pressedKeyIndex = maxSteps - (stepPerRow * rowsSelection); 
+        }
         setContext(contextId, pressedKeyIndex);
         renderNext();
-        // renderKeys();
+        renderKeys();
+    }
+
+    void setRow(int desiredRow)
+    {
+        int scrollGroup = getScrollGroup();
+        int nRows = maxSteps / (stepPerRow * rowsSelection);
+        scrollGroup = desiredRow % nRows;
+        pressedKeyIndex = scrollGroup * (stepPerRow * rowsSelection);
+
+        setContext(contextId, pressedKeyIndex);
+
+        renderNext();
+        renderKeys();
     }
 
 public:
@@ -147,6 +163,14 @@ public:
                 func = [this, direction](KeypadLayout::KeyMap& keymap) {
                     if (contextId != 0 && rowsSelection > 0 && KeypadLayout::isReleased(keymap)) {
                         scroll(direction);
+                    }
+                };
+            }
+            if (action.rfind(".setRow:") == 0) {
+                int16_t row = std::stoi(action.substr(8));
+                func = [this, row](KeypadLayout::KeyMap& keymap) {
+                    if (contextId != 0 && rowsSelection > 0 && KeypadLayout::isReleased(keymap)) {
+                        setRow(row);
                     }
                 };
             }

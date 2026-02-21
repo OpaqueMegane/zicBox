@@ -173,10 +173,13 @@ export function SeqView({
                         // rowsSelectionColor={"#28595f"}
                         gridKeys={[B1, B2, B3, B4, B5, B6, B7, B8]}
                         keys={[
-                            { key: A1, action: '.scroll:-1', context: { id: shiftContext, value: 0 } },
+                            { key: A1, action: '.scroll', context: { id: shiftContext, value: 0 } },
                             { key: A1, action: `playPause`, context: { id: shiftContext, value: 1 } },
 
-                            { key: A2, action: '.scroll', context: { id: shiftContext, value: 0 } },
+                            { key: B1, action: `.setRow:0`, context: { id: shiftContext, value: 1 } },
+                             { key: B2, action: `.setRow:1`, context: { id: shiftContext, value: 1 } },
+
+                            { key: A2, action: '.scroll:-1', context: { id: shiftContext, value: 0 } },
                             {
                                 key: A2,
                                 action: `data:Sequencer:${track}:GENERATE`,
